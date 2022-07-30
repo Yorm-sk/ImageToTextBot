@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.Yorm_sk.image_to_text_bot.dao.ISettingDao">
+    <resultMap id="settingResultMap" type="setting">
+        <id property="id" column="id" javaType="long"/>
+        <result property="interfaceLang" column="interface_lang"/>
+        <result property="imageLang" column="image_lang"/>
+        <association property="user" column="user_id" javaType="user"
+                     select="com.Yorm_sk.image_to_text_bot.dao.IUserDao.getEntityById"/>
+    </resultMap>
+
+    <select id="getEntityById" resultMap="settingResultMap">
+        SELECT * FROM `settings` WHERE id = #{id}
+    </select>
+
+    <select id="getSettingByUserId" resultMap="settingResultMap">
+        SELECT * FROM `settings` WHERE user_id = #{id}
+    </select>
+
+    <select id="getAllEntities" resultMap="settingResultMap">
+        SELECT * FROM `settings`
+    </select>
+
+    <delete id="deleteEntityById" parameterType="setting">
+        DELETE FROM `settings` WHERE id = {#id}
+    </delete>
+    
+    <insert id="createEntity" parameterType="setting" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `settings` (`interface_lang`, `image_lang`, `user_id`)
+        VALUES (#{interfaceLang}, #{imageLang}, #{user.id})
+    </insert>
+
+    <update id="updateEntity" parameterType="setting">
+        UPDATE `settings` SET `interface_lang` = #{interfaceLang}, `image_lang` = #{imageLang}, `user_id` = #{user.id}
+        WHERE id = #{id}
+    </update>
+</mapper>
