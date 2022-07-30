@@ -5,4 +5,4 @@ To start bot create:
  - Mysql Database, model for it stored in src/mysql
  - db.propeties with 'driver', 'url', 'username', 'password' keys, where set your parameters for database in resources
  
-Then you can lunch bot locally from StartServer java class
+Then you can launch bot locally from StartServer java class
