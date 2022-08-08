@@ -42,6 +42,7 @@ public class MessageHandler {
     private final List<String> settingCommands = KeyBoardMessages.SETTING.getMessageTexts();
     private final List<String> imgCommands = KeyBoardMessages.IMG_LANG.getMessageTexts();
     private final List<String> interfaceCommands = KeyBoardMessages.INTERFACE_LANG.getMessageTexts();
+    private final List<String> responseCommands = KeyBoardMessages.RESPONSE_TYPE.getMessageTexts();
 
     public MessageHandler(Setting setting) {
         resourceBundle = new NeededLanguage().getTextByLanguage(setting.getInterfaceLang());
@@ -62,6 +63,7 @@ public class MessageHandler {
             if (settingCommands.contains(inputText)) inputText = "/setting";
             if (imgCommands.contains(inputText)) inputText = "/img_lang";
             if (interfaceCommands.contains(inputText)) inputText = "/interface_lang";
+            if (responseCommands.contains(inputText)) inputText = "/response_type";
 
             switch (inputText) {
                 case "/start":
@@ -74,6 +76,8 @@ public class MessageHandler {
                     return getImgSetting(chatId);
                 case "/interface_lang":
                     return getInterfaceSettings(chatId);
+                case "/response_type":
+                    return getResponseType(chatId);
                 default:
                     return wrongInput(chatId);
             }
@@ -101,9 +105,13 @@ public class MessageHandler {
     }
 
     private String messageForSetting() {
-        return String.format("%s %s\n%s %s", resourceBundle.getString("current.int.language"),
+        String responseType;
+        if (setting.isSendByFile()) responseType = resourceBundle.getString("txt.response");
+        else responseType = resourceBundle.getString("telegram.response");
+        return String.format("%s %s\n%s %s\n%s %s", resourceBundle.getString("current.int.language"),
                 setting.getInterfaceLang(), resourceBundle.getString("current.img.language"),
-                setting.getImageLang());
+                setting.getImageLang(), resourceBundle.getString("current.response.type"),
+                responseType);
     }
 
     private SendMessage getImgSetting(String chatId) {
@@ -114,7 +122,13 @@ public class MessageHandler {
 
     private SendMessage getInterfaceSettings(String chatId) {
         SendMessage sendMessage = new SendMessage(chatId, resourceBundle.getString("language.choose"));
-        sendMessage.setReplyMarkup(keyboardsMaker.getInlineMessageButtons(InlineKeyBoardType.USER));
+        sendMessage.setReplyMarkup(keyboardsMaker.getInlineMessageButtons(InlineKeyBoardType.INTERFACE));
+        return sendMessage;
+    }
+
+    private SendMessage getResponseType(String chatId) {
+        SendMessage sendMessage = new SendMessage(chatId, "\uD83D\uDC47");
+        sendMessage.setReplyMarkup(keyboardsMaker.getInlineMessageButtons(resourceBundle));
         return sendMessage;
     }
 
@@ -132,7 +146,7 @@ public class MessageHandler {
     /**
      * return telegram method that send file to telegram user
      * **/
-    public SendDocument sendTextFromPicture(File file, String chatId) {
+    public SendDocument sendTextFromPictureAsFile(File file, String chatId) {
         String textFromPic = textFromPicture(file, setting.getImageLang());
         if (setting.getImageLang().equals("zh")) {
             textFromPic = textFromPic.replaceAll(" ", "");
@@ -144,6 +158,18 @@ public class MessageHandler {
         sendDocument.setChatId(chatId);
         sendDocument.setDocument(inputFile);
         return sendDocument;
+    }
+
+    /**
+     * return telegram method that send file to telegram user
+     * **/
+    public SendMessage sendTextFromPictureAsMessage(File file, String chatId){
+        String textFromPic = textFromPicture(file, setting.getImageLang());
+        textFromPic = textFromPic.replaceAll("\n", " ");
+        if (setting.getImageLang().equals("zh")) {
+            textFromPic = textFromPic.replaceAll(" ", "");
+        }
+        return new SendMessage(chatId, textFromPic);
     }
 
     private String textFromPicture(File file, String lang) {

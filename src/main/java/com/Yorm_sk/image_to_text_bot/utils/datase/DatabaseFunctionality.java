@@ -41,7 +41,7 @@ public class DatabaseFunctionality {
         userDao.createEntity(user);
         String standardLanguage = user.getTelegramLang();
         if (!(new NeededLanguage().getLanguages().contains(standardLanguage))) standardLanguage = "en";
-        Setting setting = new Setting(standardLanguage, standardLanguage, user);
+        Setting setting = new Setting(standardLanguage, standardLanguage, user, true);
         settingDao.createEntity(setting);
         users = getAllUsersFromDatabase();
         settings = settingDao.getAllEntities();

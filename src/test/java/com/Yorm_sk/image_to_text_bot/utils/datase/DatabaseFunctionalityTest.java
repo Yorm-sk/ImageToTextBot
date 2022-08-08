@@ -55,7 +55,7 @@ class DatabaseFunctionalityTest {
 
     @Test
     void getSettingForUser() {
-        User user = databaseFunctionality.getUserByTelegramId(1122);
+        User user = databaseFunctionality.getUserByTelegramId(296300341);
         try {
             Setting setting = databaseFunctionality.getSettingForUser(user);
             assertNotNull(setting);

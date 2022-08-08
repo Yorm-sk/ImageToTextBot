@@ -9,7 +9,9 @@ public enum KeyBoardMessages {
     IMG_LANG(List.of("change img language\uD83D\uDDBC", "изменить язык картинки\uD83D\uDDBC",
             "змінити мову картинки\uD83D\uDDBC", "选图片语言\uD83D\uDDBC")),
     INTERFACE_LANG(List.of("change interface language\uD83D\uDCDC", "изменить язык интерфейса\uD83D\uDCDC",
-            "змінити мову інтерфейсу\uD83D\uDCDC", "选界面语言\uD83D\uDCDC"));
+            "змінити мову інтерфейсу\uD83D\uDCDC", "选界面语言\uD83D\uDCDC")),
+    RESPONSE_TYPE(List.of("change response type", "изменить тип ответа", "змінити тип відповіді",
+            "改回复形式"));
 
     private final List<String> messageTexts;
 

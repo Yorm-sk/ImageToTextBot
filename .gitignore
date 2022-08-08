@@ -18,7 +18,6 @@
 *.zip
 *.tar.gz
 *.rar
-*.properties
 *.txt
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
@@ -27,4 +26,5 @@ replay_pid*
 /.idea
 /target
 /documents
-/photos
+src/main/resources/bot.properties
+src/main/resources/db.properties

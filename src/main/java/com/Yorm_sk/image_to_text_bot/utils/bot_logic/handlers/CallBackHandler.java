@@ -67,6 +67,12 @@ public class CallBackHandler {
             case "zh_user":
                 response = CallBackResponses.USER_ZH;
                 break;
+            case "txt":
+                response = CallBackResponses.TXT;
+                break;
+            case "message":
+                response = CallBackResponses.TEL_MESSAGE;
+                break;
             default:
                 response = CallBackResponses.USER_EN;
                 break;
@@ -91,6 +97,18 @@ public class CallBackHandler {
                 databaseFunctionality.updateUserSetting(setting);
                 resourceBundle = new NeededLanguage().getTextByLanguage(setting.getInterfaceLang());
                 sendMessage = new SendMessage(chatId, resourceBundle.getString("interface.changed"));
+                sendMessage.setReplyMarkup(new KeyboardsMaker().getMainMenuKeyboard(resourceBundle));
+                return sendMessage;
+            case TXT:
+                setting.setSendByFile(true);
+                databaseFunctionality.updateUserSetting(setting);
+                sendMessage = new SendMessage(chatId, "\uD83D\uDC4D");
+                sendMessage.setReplyMarkup(new KeyboardsMaker().getMainMenuKeyboard(resourceBundle));
+                return sendMessage;
+            case TEL_MESSAGE:
+                setting.setSendByFile(false);
+                databaseFunctionality.updateUserSetting(setting);
+                sendMessage = new SendMessage(chatId, "\uD83D\uDC4D");
                 sendMessage.setReplyMarkup(new KeyboardsMaker().getMainMenuKeyboard(resourceBundle));
                 return sendMessage;
         }

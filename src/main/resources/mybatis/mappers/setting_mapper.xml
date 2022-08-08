@@ -7,6 +7,7 @@
         <id property="id" column="id" javaType="long"/>
         <result property="interfaceLang" column="interface_lang"/>
         <result property="imageLang" column="image_lang"/>
+        <result property="sendByFile" column="send_by_file" javaType="boolean"/>
         <association property="user" column="user_id" javaType="user"
                      select="com.Yorm_sk.image_to_text_bot.dao.IUserDao.getEntityById"/>
     </resultMap>
@@ -28,12 +29,13 @@
     </delete>
     
     <insert id="createEntity" parameterType="setting" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO `settings` (`interface_lang`, `image_lang`, `user_id`)
-        VALUES (#{interfaceLang}, #{imageLang}, #{user.id})
+        INSERT INTO `settings` (`interface_lang`, `image_lang`, `user_id`, `send_by_file`)
+        VALUES (#{interfaceLang}, #{imageLang}, #{user.id}, #{sendByFile})
     </insert>
 
     <update id="updateEntity" parameterType="setting">
-        UPDATE `settings` SET `interface_lang` = #{interfaceLang}, `image_lang` = #{imageLang}, `user_id` = #{user.id}
+        UPDATE `settings` SET `interface_lang` = #{interfaceLang}, `image_lang` = #{imageLang}, `user_id` = #{user.id},
+        `send_by_file` = #{sendByFile}
         WHERE id = #{id}
     </update>
 </mapper>

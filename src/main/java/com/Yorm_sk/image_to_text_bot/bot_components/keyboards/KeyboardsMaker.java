@@ -38,10 +38,13 @@ public class KeyboardsMaker {
         row1.add(new KeyboardButton(resourceBundle.getString("img.button")));
         KeyboardRow row2 = new KeyboardRow();
         row2.add(new KeyboardButton(resourceBundle.getString("user.button")));
+        KeyboardRow row3 = new KeyboardRow();
+        row3.add(new KeyboardButton(resourceBundle.getString("file.button")));
 
         List<KeyboardRow> keyboard = new ArrayList<>();
         keyboard.add(row1);
         keyboard.add(row2);
+        keyboard.add(row3);
 
         final ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
         replyKeyboardMarkup.setKeyboard(keyboard);
@@ -58,7 +61,7 @@ public class KeyboardsMaker {
                 case IMG:
                     rowList.add(List.of(getButtons(s, s + "_img")));
                     break;
-                case USER:
+                case INTERFACE:
                     rowList.add(List.of(getButtons(s, s + "_user")));
                     break;
             }
@@ -67,6 +70,17 @@ public class KeyboardsMaker {
         inlineKeyboardMarkup.setKeyboard(rowList);
         return inlineKeyboardMarkup;
     }
+
+    public InlineKeyboardMarkup getInlineMessageButtons(ResourceBundle resourceBundle){
+        List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
+        rowList.add(List.of(getButtons(resourceBundle.getString("txt.response"), "txt")));
+        rowList.add(List.of(getButtons(resourceBundle.getString("telegram.response"), "message")));
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        inlineKeyboardMarkup.setKeyboard(rowList);
+        return inlineKeyboardMarkup;
+    }
+
+
 
     private InlineKeyboardButton getButtons(String buttonName, String buttonCallBackData){
         InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();

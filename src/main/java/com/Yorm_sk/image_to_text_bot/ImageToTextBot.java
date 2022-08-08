@@ -27,7 +27,7 @@ import java.util.ResourceBundle;
 /**
  * Contain main logic for update processing
  * Get token and bot name from resources bot.properties
- * **/
+ **/
 public class ImageToTextBot extends TelegramLongPollingBot {
     private final static Logger LOGGER = LogManager.getLogger(ImageToTextBot.class);
     private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("bot");
@@ -49,9 +49,10 @@ public class ImageToTextBot extends TelegramLongPollingBot {
     public String getBotToken() {
         return botToken;
     }
+
     /**
      * process update file from telegram api
-     * **/
+     **/
     @Override
     public void onUpdateReceived(Update update) {
         GetInformationFromUpdate information = new GetInformationFromUpdate(update);
@@ -69,26 +70,31 @@ public class ImageToTextBot extends TelegramLongPollingBot {
             File file = null;
             try {
                 MessageHandler messageHandler = new MessageHandler(databaseFunctionality.getSettingForUser(user));
-                if (information.getMessage().hasPhoto()){
+                if (information.getMessage().hasPhoto()) {
                     String filepath = execute(messageHandler.getPhoto(information.getMessage().getPhoto())).getFilePath();
                     file = downloadFile(filepath, new File(filepath));
-                    execute(messageHandler.sendTextFromPicture(file, update.getMessage().getChatId().toString()));
-                } else if (information.getMessage().hasDocument()){
-                  String filepath = execute(messageHandler.getDocument(information.getMessage().getDocument())).getFilePath();
-                  file = downloadFile(filepath, new File(filepath));
-                  execute(messageHandler.sendTextFromPicture(file, update.getMessage().getChatId().toString()));
+                    if (databaseFunctionality.getSettingForUser(user).isSendByFile())
+                        execute(messageHandler.sendTextFromPictureAsFile(file, update.getMessage().getChatId().toString()));
+                    else
+                        execute(messageHandler.sendTextFromPictureAsMessage(file, update.getMessage().getChatId().toString()));
+                } else if (information.getMessage().hasDocument()) {
+                    String filepath = execute(messageHandler.getDocument(information.getMessage().getDocument())).getFilePath();
+                    file = downloadFile(filepath, new File(filepath));
+                    if (databaseFunctionality.getSettingForUser(user).isSendByFile())
+                        execute(messageHandler.sendTextFromPictureAsFile(file, update.getMessage().getChatId().toString()));
+                    else
+                        execute(messageHandler.sendTextFromPictureAsMessage(file, update.getMessage().getChatId().toString()));
                 } else execute(messageHandler.checkMessage(information.getMessage()));
             } catch (UserWithNoData | TelegramApiException e) {
                 LOGGER.error(e.getMessage());
-            } catch (NotSuchDocumentType e){
+            } catch (NotSuchDocumentType e) {
                 try {
                     execute(new SendMessage(update.getMessage().getChatId().toString(), e.getMessage()));
                 } catch (TelegramApiException ex) {
                     LOGGER.error(e.getMessage());
                 }
             } finally {
-                assert file != null;
-                file.delete();
+                if (file != null) file.delete();
             }
         } else if (update.hasCallbackQuery()) {
             try {
